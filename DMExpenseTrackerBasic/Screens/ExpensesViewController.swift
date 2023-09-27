@@ -12,7 +12,7 @@ class ExpensesViewController: UIViewController {
     /**
      6.1 Connect the UITableView and UILabel to the code.
      */
-    @IBOutlet weak var MoneySpent: UITableView!
+    @IBOutlet weak var moneySpent: UITableView!
     
     
     @IBOutlet weak var amountSpent: UILabel!
@@ -44,8 +44,8 @@ class ExpensesViewController: UIViewController {
      9.1 Have the UILabel display the amount of money the user spent for the selected category. For example, "You spent $25 on entertainment.".
      */
     func configureViewController() {
-        var totalSpent = ExpenseHelper.calculateTotalSpent(expenses: expenses)
-        var totalSpentFormatted = totalSpent.formatted(.currency(code: "USD"))
+        let totalSpent = ExpenseHelper.calculateTotalSpent(expenses: expenses)
+        let totalSpentFormatted = totalSpent.formatted(.currency(code: "USD"))
         amountSpent.text = "You spent \(totalSpentFormatted) on \(category)"
     }
     
@@ -55,8 +55,8 @@ class ExpensesViewController: UIViewController {
      */
     func configureTableView() {
         
-        MoneySpent.delegate = self
-        MoneySpent.dataSource = self
+        moneySpent.delegate = self
+        moneySpent.dataSource = self
     }
     
 }
@@ -66,9 +66,9 @@ extension ExpensesViewController: UITableViewDelegate, UITableViewDataSource {
         return expenses.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.expenseReuseID, for: indexPath)
-        let expense = expenses[indexPath.row]
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.expenseReuseID, for: indexPath) as! ExpenseCell
+      let expense = expenses[indexPath.row]
+        cell.set(expense: expense)
         return cell
     }
     

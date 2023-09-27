@@ -17,7 +17,7 @@ class CategoriesViewController: UIViewController {
      2.1 Connect the UITableView to the code.
      */
     
-    @IBOutlet weak var categories: UITableView!
+    @IBOutlet weak var tableView: UITableView!
     /**
      3.1 Follow the steps in the `Expense` file.
      3.2 Create a [String: [Expense]] variable called expensesByCategory and initialize it to an empty dictionary.
@@ -25,9 +25,9 @@ class CategoriesViewController: UIViewController {
      
      We will assign the correct data to the variables soon.
      */
-    var expensesByCategory: [String:[Expense]] = [:]
+    var expensesByCategory = [String:[Expense]]()
     
-    var expensesbyCategory: [String] = []
+    var categories = [String]()
     /**
      8.1 Call the `configureViewController` and `configureTableView` functions.
      */
@@ -45,9 +45,9 @@ class CategoriesViewController: UIViewController {
      4.4 Use `expensesByCategory` to get an array of categories and assign the result to `categories`.
      */
     func configureViewController() {
-        self.title = "Categories"
-        
-        let expensesByCategory = ExpenseHelper.getExpensesByCategory(expenses: )
+        title = "Categories"
+        expensesByCategory = ExpenseHelper.getExpensesByCategory(expenses: Expense.expenses)
+        categories = Array(expensesByCategory.keys)
         
     }
     
@@ -58,22 +58,36 @@ class CategoriesViewController: UIViewController {
      */
     func configureTableView() {
         
-        categories.delegate = self
-        categories.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
 }
     extension CategoriesViewController: UITableViewDelegate, UITableViewDataSource {
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            performSegue(withIdentifier: "ExpenseType", sender: self)
-        }
+        
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return 10
+            return expensesByCategory.count
         }
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ExpenseType", for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: Constants.categoryReuseID, for: indexPath)
+            let categories = categories[indexPath.row]
+            var content = cell.defaultContentConfiguration()
+            content.text = categories
+            cell.contentConfiguration = content
             return cell
+            //we need cell to connect to content
+            //we need to get each category from the model using indexPath.row
+            //we then need to tell it how to look with default content configuration
         }
+        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+                tableView.deselectRow(at: indexPath, animated: true)
+            let expenseVC = storyboard!.instantiateViewController(withIdentifier: "ExpensesViewController")
+                self.navigationController?.pushViewController(expenseVC, animated: true)
+
+            }
     }
         
 
+//method  default content configiuration, telling table view how to look
+//method  content configuration
+//working with categories
